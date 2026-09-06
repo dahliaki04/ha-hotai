@@ -3,3 +3,5 @@ __pycache__/
 .venv/
 tools/probe_dump*.json
 .claude/
+localtest/cert.pem
+localtest/key.pem
