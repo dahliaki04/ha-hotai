@@ -1,5 +1,10 @@
 # Local control of a HOTAI / TaiSEIA dehumidifier with an ESP32-C3 replacing the cloud Wi-Fi module.
 #
+# FIRST BOOT = THE COMPATIBILITY TEST. No USB-TTL adapter needed: the taixia component sends the TaiSEIA
+# registration frame (06 00 00 FF FF cs @ 9600) on boot and the appliance answers with brand/model/version and
+# the list of service IDs it supports. Those land in the text sensors below and, with uart.debug on, the raw
+# bytes appear in the ESPHome log. If "SA Model" shows HT046A1 and "SA Services" is non-empty, it works.
+#
 # The appliance talks TaiSEIA over UART (9600 8N1, 5 V logic) on its 4-pin "SA" port; the stock
 # Wi-Fi module is just a TaiSEIA<->Exosite bridge. Unplug it, plug in the ESP, and the unit shows up
 # in Home Assistant natively (no cloud, no 和泰智慧家 account).
@@ -22,7 +27,7 @@ esphome:
   friendly_name: ${friendly}
 
 esp32:
-  board: esp32-c3-devkitm-1
+  board: seeed_xiao_esp32c3   # Brian's board (Seeed XIAO ESP32-C3). For a C3 Super Mini use esp32-c3-devkitm-1 + GPIO6/7.
   framework:
     type: arduino
 
@@ -50,18 +55,15 @@ web_server:
 
 uart:
   id: uart_taixia
-  tx_pin: GPIO7  # -> SA pin 3 (RX of the appliance), through the level shifter
-  rx_pin: GPIO6  # <- SA pin 4 (TX of the appliance), through the level shifter
+  tx_pin: GPIO21  # XIAO D6 -> SA "RX to appliance" pin, through the level shifter
+  rx_pin: GPIO20  # XIAO D7 <- SA "TX from appliance" pin, through the level shifter
   baud_rate: 9600
-  debug:
-    direction: BOTH  # comment out once it works
+  debug:            # keep ON for the first boot: every byte to/from the appliance shows in the ESPHome log
+    direction: BOTH
 
 taixia:
 
-status_led:
-  pin:
-    number: GPIO8
-    inverted: true
+# (XIAO ESP32-C3 has no user LED; status_led omitted)
 
 text_sensor:
   - platform: taixia
