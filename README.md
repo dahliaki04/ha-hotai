@@ -1,4 +1,7 @@
-# HOTAI Smart Home（和泰智慧家）for Home Assistant
+# Hotai Dehumidifier (unofficial) for Home Assistant
+
+> 非官方社群專案，與和泰興業／嘉儀企業無關，「和泰」「HOTAI」為其所有者之商標。
+> Unofficial community project, not affiliated with or endorsed by HOTAI / Karo's Industrial.
 
 把「和泰智慧家」App 裡的和泰／嘉儀 (Karo's) 智慧家電接進 Home Assistant。
 目前對應 **除濕機**（TaiSEIA device 4，SA04 / RD / RDI 系列）。
@@ -11,7 +14,7 @@ App 背後是 Exosite **ExoHome** 雲端（`karos.apps.exosite.io`），機器�
 
 1. HACS → Integrations → ⋮ → Custom repositories → 加入 `https://github.com/dahliaki04/ha-hotai`，類型 Integration。
 2. 安裝後重啟 HA。
-3. 設定 → 整合 → 新增 → 搜尋「HOTAI」→ 輸入和泰智慧家 App 的 email / 密碼。
+3. 設定 → 整合 → 新增 → 搜尋「Hotai Dehumidifier」→ 輸入和泰智慧家 App 的 email / 密碼。
 
 ## 實體
 

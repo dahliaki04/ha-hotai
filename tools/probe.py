@@ -19,7 +19,7 @@ from pathlib import Path
 
 import aiohttp
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "custom_components" / "hotai_smart_home"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "custom_components" / "hotai_dehumidifier"))
 from exohome import DEFAULT_HOST, ExoHomeClient, ExoHomeError  # noqa: E402
 
 

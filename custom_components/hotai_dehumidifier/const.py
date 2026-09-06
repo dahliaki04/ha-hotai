@@ -1,9 +1,9 @@
-"""Constants for the HOTAI Smart Home (和泰智慧家) integration."""
+"""Constants for the Hotai Dehumidifier (unofficial) integration."""
 
 from __future__ import annotations
 
-DOMAIN = "hotai_smart_home"
-VERSION = "0.1.1"
+DOMAIN = "hotai_dehumidifier"
+VERSION = "0.1.2"
 
 CONF_EMAIL = "email"
 CONF_PASSWORD = "password"

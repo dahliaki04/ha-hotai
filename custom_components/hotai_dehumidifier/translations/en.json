@@ -2,8 +2,8 @@
   "config": {
     "step": {
       "user": {
-        "title": "HOTAI Smart Home (和泰智慧家)",
-        "description": "Sign in with the account you use in the 和泰智慧家 app.",
+        "title": "Hotai Dehumidifier (unofficial)",
+        "description": "Unofficial integration. Sign in with the account you use in the 和泰智慧家 app.",
         "data": {
           "email": "Email",
           "password": "Password",

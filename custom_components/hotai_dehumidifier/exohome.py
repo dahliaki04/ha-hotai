@@ -1,4 +1,4 @@
-"""Async client for the Exosite ExoHome "phone" API used by the 和泰智慧家 (HOTAI Smart Home) app.
+"""Async client for the Exosite ExoHome "phone" API used by the Hotai 除濕機（非官方） app.
 
 Protocol (recovered from the app bundle, com.hotai.mobile 3.1.3):
 

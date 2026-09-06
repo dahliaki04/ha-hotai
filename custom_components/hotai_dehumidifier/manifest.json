@@ -1,6 +1,6 @@
 {
-  "domain": "hotai_smart_home",
-  "name": "HOTAI Smart Home (和泰智慧家)",
+  "domain": "hotai_dehumidifier",
+  "name": "Hotai Dehumidifier (unofficial)",
   "codeowners": ["@dahliaki04"],
   "config_flow": true,
   "dependencies": [],
@@ -9,5 +9,5 @@
   "iot_class": "cloud_push",
   "issue_tracker": "https://github.com/dahliaki04/ha-hotai/issues",
   "requirements": [],
-  "version": "0.1.1"
+  "version": "0.1.2"
 }

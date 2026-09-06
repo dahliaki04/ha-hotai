@@ -1,4 +1,4 @@
-"""HOTAI Smart Home (和泰智慧家) — cloud-push integration for HOTAI/Karo's appliances on Exosite ExoHome."""
+"""Hotai Dehumidifier (unofficial) — cloud-push integration for HOTAI/Karo's appliances on Exosite ExoHome."""
 
 from __future__ import annotations
 

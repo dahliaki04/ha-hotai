@@ -2,8 +2,8 @@
   "config": {
     "step": {
       "user": {
-        "title": "和泰智慧家 (HOTAI Smart Home)",
-        "description": "使用你在「和泰智慧家」App 登入的帳號。",
+        "title": "Hotai 除濕機（非官方）",
+        "description": "非官方整合。使用你在「和泰智慧家」App 登入的帳號。",
         "data": {
           "email": "電子郵件",
           "password": "密碼",

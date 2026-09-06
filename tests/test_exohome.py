@@ -12,7 +12,7 @@ import pytest
 from aiohttp import web
 from aiohttp.test_utils import TestServer
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "custom_components" / "hotai_smart_home"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "custom_components" / "hotai_dehumidifier"))
 from exohome import AuthError, ExoHomeClient, RequestError  # noqa: E402
 
 TOKEN = "tok-123"
