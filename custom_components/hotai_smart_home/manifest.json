@@ -1,0 +1,13 @@
+{
+  "domain": "hotai_smart_home",
+  "name": "HOTAI Smart Home (和泰智慧家)",
+  "codeowners": ["@dahliaki04"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/dahliaki04/ha-hotai",
+  "integration_type": "hub",
+  "iot_class": "cloud_push",
+  "issue_tracker": "https://github.com/dahliaki04/ha-hotai/issues",
+  "requirements": [],
+  "version": "0.1.0"
+}

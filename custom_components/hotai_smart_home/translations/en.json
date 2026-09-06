@@ -1,0 +1,91 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "HOTAI Smart Home (和泰智慧家)",
+        "description": "Sign in with the account you use in the 和泰智慧家 app.",
+        "data": {
+          "email": "Email",
+          "password": "Password",
+          "host": "Cloud host (leave default)"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Re-authenticate",
+        "description": "The password for {email} was rejected. Enter the current password.",
+        "data": { "password": "Password" }
+      }
+    },
+    "error": {
+      "invalid_auth": "Email or password rejected",
+      "cannot_connect": "Could not reach the HOTAI cloud",
+      "unknown": "Unexpected error"
+    },
+    "abort": {
+      "already_configured": "This account is already configured",
+      "reauth_successful": "Re-authentication was successful"
+    }
+  },
+  "entity": {
+    "humidifier": {
+      "dehumidifier": {
+        "state_attributes": {
+          "mode": {
+            "state": {
+              "auto": "Auto",
+              "target": "Set humidity",
+              "continuous": "Continuous",
+              "dry_clothes": "Dry clothes",
+              "air_purify": "Air purify",
+              "anti_mold": "Anti-mold / mite",
+              "fan_only": "Fan only",
+              "comfort": "Comfort",
+              "low_humidity": "Low humidity dry"
+            }
+          }
+        }
+      }
+    },
+    "sensor": {
+      "temperature": { "name": "Temperature" },
+      "humidity": { "name": "Humidity" },
+      "current": { "name": "Current" },
+      "voltage": { "name": "Voltage" },
+      "power_factor": { "name": "Power factor" },
+      "power": { "name": "Power" },
+      "energy": { "name": "Energy" },
+      "error_code": { "name": "Error code" },
+      "side_vent": { "name": "Side vent", "state": { "normal": "Normal", "side": "Side outlet" } },
+      "device_state": { "name": "Cloud device state" }
+    },
+    "binary_sensor": {
+      "tank_full": { "name": "Water tank full" },
+      "filter_dirty": { "name": "Filter needs cleaning" },
+      "defrosting": { "name": "Defrosting" },
+      "connectivity": { "name": "Cloud connection" }
+    },
+    "switch": {
+      "auto_swing": { "name": "Auto swing" },
+      "ambient_light": { "name": "Ambient light" },
+      "body_anti_mold": { "name": "Body anti-mold" },
+      "high_humidity_alert": { "name": "High humidity alert" },
+      "key_lock": { "name": "Key lock" },
+      "mute": { "name": "Mute" }
+    },
+    "select": {
+      "fan_speed": { "name": "Fan speed", "state": { "auto": "Auto" } },
+      "dehumidify_level": { "name": "Dehumidify level" },
+      "dry_clothes_level": { "name": "Dry clothes level" },
+      "swing_level": { "name": "Swing level" },
+      "air_purify_mode": { "name": "Air purify mode", "state": { "off": "Off" } },
+      "sound": {
+        "name": "Sound",
+        "state": { "normal": "Normal", "key_beep": "Key beep", "tank_and_key_beep": "Tank full + key beep" }
+      }
+    },
+    "number": {
+      "timer_hours": { "name": "Off timer" },
+      "high_humidity_threshold": { "name": "High humidity threshold" }
+    }
+  }
+}

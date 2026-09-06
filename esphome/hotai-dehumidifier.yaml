@@ -1,0 +1,140 @@
+# Local control of a HOTAI / TaiSEIA dehumidifier with an ESP32-C3 replacing the cloud Wi-Fi module.
+#
+# The appliance talks TaiSEIA over UART (9600 8N1, 5 V logic) on its 4-pin "SA" port; the stock
+# Wi-Fi module is just a TaiSEIA<->Exosite bridge. Unplug it, plug in the ESP, and the unit shows up
+# in Home Assistant natively (no cloud, no 和泰智慧家 account).
+#
+# Hardware (per tsunglung/taixia + xangin/TaiSEIA_ESPhome_samples):
+#   SA port pin 1 = 5 V, pin 2 = GND, pin 3 = RX into appliance, pin 4 = TX out of appliance  (Hitachi pinout;
+#   VERIFY on the HOTAI board with a multimeter before wiring — find 5 V/GND first, the other two are data)
+#   ESP32-C3 Super Mini powered from the 5 V pin; a bidirectional 3.3 V <-> 5 V level shifter on TX/RX.
+#   Keep the original module and its cable so you can revert.
+#
+# Adapted from xangin's Hitachi/Dehumidifier-ESP32C3.yaml; the taixia dehumidifier type maps the same
+# TaiSEIA service IDs the HOTAI cloud exposes as H00..H1D.
+
+substitutions:
+  devicename: hotai-dehumidifier
+  friendly: "和泰除濕機"
+
+esphome:
+  name: ${devicename}
+  friendly_name: ${friendly}
+
+esp32:
+  board: esp32-c3-devkitm-1
+  framework:
+    type: arduino
+
+external_components:
+  - source: github://tsunglung/taixia@master
+    components: [taixia]
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  ap:
+    ssid: ${devicename}
+    password: "12345678"
+
+captive_portal:
+
+logger:
+  baud_rate: 0  # UART0 is used for the appliance; keep the USB log quiet
+
+api:
+ota:
+  - platform: esphome
+
+web_server:
+
+uart:
+  id: uart_taixia
+  tx_pin: GPIO7  # -> SA pin 3 (RX of the appliance), through the level shifter
+  rx_pin: GPIO6  # <- SA pin 4 (TX of the appliance), through the level shifter
+  baud_rate: 9600
+  debug:
+    direction: BOTH  # comment out once it works
+
+taixia:
+
+status_led:
+  pin:
+    number: GPIO8
+    inverted: true
+
+text_sensor:
+  - platform: taixia
+    sa_id:
+      name: "SA ID"
+    brand:
+      name: "SA Brand"
+    model:
+      name: "SA Model"
+    version:
+      name: "SA Version"
+    services:
+      name: "SA Services"  # lists which service IDs this unit implements
+
+binary_sensor:
+  - platform: status
+    name: "Status"
+  - platform: taixia
+    type: dehumidifier
+    water_tank_full:
+      name: "滿水"
+    filter_notify:
+      name: "濾網需清洗"
+    defrost:
+      name: "除霜中"
+
+button:
+  - platform: restart
+    name: "Restart"
+  - platform: taixia
+    type: dehumidifier
+    get_info:
+      name: "Get Info"
+
+fan:
+  - platform: taixia
+    type: dehumidifier
+    id: fan_dehumidifier
+    name: "風扇"
+    speed: true
+    speed_count: 4
+
+select:
+  - platform: taixia
+    type: dehumidifier
+    operating_program:
+      name: "運轉模式"
+      options:
+        - normal
+        - eco
+        - home
+        - boost
+        - sleep
+
+number:
+  - platform: taixia
+    type: dehumidifier
+    operating_time:
+      name: "定時關機"
+    relative_humidity:
+      name: "目標濕度"
+    light_level:
+      name: "氣氛燈"
+
+sensor:
+  - platform: wifi_signal
+    name: "WiFi Signal"
+    update_interval: 60s
+  - platform: taixia
+    type: dehumidifier
+    humidity_indoor:
+      name: "室內濕度"
+    energy_consumption:
+      name: "累積用電量"
+    error_code:
+      name: "錯誤碼"

@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+.venv/
+tools/probe_dump*.json
+.claude/
