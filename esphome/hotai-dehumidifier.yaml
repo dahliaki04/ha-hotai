@@ -9,10 +9,14 @@
 # Wi-Fi module is just a TaiSEIA<->Exosite bridge. Unplug it, plug in the ESP, and the unit shows up
 # in Home Assistant natively (no cloud, no 和泰智慧家 account).
 #
-# Hardware (per tsunglung/taixia + xangin/TaiSEIA_ESPhome_samples):
-#   SA port pin 1 = 5 V, pin 2 = GND, pin 3 = RX into appliance, pin 4 = TX out of appliance  (Hitachi pinout;
-#   VERIFY on the HOTAI board with a multimeter before wiring — find 5 V/GND first, the other two are data)
-#   ESP32-C3 Super Mini powered from the 5 V pin; a bidirectional 3.3 V <-> 5 V level shifter on TX/RX.
+# Hardware — HOTAI uses a USB-A SOCKET as the SA port (the vendor "雲端智慧型 WIFI" is a USB-A dongle, see the
+# HOTAI setup video). It is NOT real USB: the four USB pins carry 5 V / GND / UART. Expected (verify with a meter):
+#   USB pin 1 VBUS = 5 V       -> powers the ESP
+#   USB pin 4 GND
+#   USB pin 2 D- / pin 3 D+    = the two UART lines. The one that idles HIGH is the appliance's TX (-> our RX);
+#                                the other is the appliance's RX (<- our TX). If no reply on first boot, swap them.
+#   Use a USB-A MALE breakout board (or a cut USB cable: red=VBUS, black=GND, white=D-, green=D+).
+#   Bidirectional 3.3 V <-> 5 V level shifter on both data lines (5 V logic).
 #   Keep the original module and its cable so you can revert.
 #
 # Adapted from xangin's Hitachi/Dehumidifier-ESP32C3.yaml; the taixia dehumidifier type maps the same
