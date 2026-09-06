@@ -5,7 +5,7 @@ Protocol (recovered from the app bundle, com.hotai.mobile 3.1.3):
   REST  POST https://{host}/api:1/session      {"email","password"} -> {"token","id"}
         GET  https://{host}/api:1/session      Authorization: Bearer <token>   (validate)
   WS    wss://{host}/api:1/phone
-        first frame  {"id":"ws-request-auth","request":"login","data":{"token":...}}
+        first frame  {"id":1,"request":"login","data":{"token":...}}   (integer id; string ids get code 300)
         requests     {"id":<int>,"request":<name>,"device":<sn>|None,"data":<obj>|None}
         responses    {"id":<same>,"status":"ok"|"error",...,"data":...}
         events       {"event":"device_change"|"add_device"|"del_device"|"token_expired"|..., "data":{...}}
@@ -286,7 +286,11 @@ class ExoHomeClient:
             raise ConnectionFailed("ws connect timed out") from err
         except aiohttp.ClientError as err:
             raise ConnectionFailed(f"ws connect failed: {err}") from err
-        auth = {"id": WS_AUTH_ID, "request": "login", "data": {"token": self._token}}
+        # The app builds this frame with id "ws-request-auth", but its sender overwrites any truthy id
+        # with the running integer counter before transmitting; the server rejects string ids (code 300).
+        auth_id = self._next_id
+        self._next_id += 1
+        auth = {"id": auth_id, "request": "login", "data": {"token": self._token}}
         await self._ws.send_str(json.dumps(auth))
         try:
             reply = await asyncio.wait_for(self._ws.receive(), REQUEST_TIMEOUT)
@@ -372,9 +376,13 @@ class ExoHomeClient:
     async def get_me(self) -> dict[str, Any]:
         return (await self.request("get_me")).get("data") or {}
 
-    async def list_devices(self) -> list[str]:
+    async def list_device_entries(self) -> list[dict[str, Any]]:
+        """lst_device rows: {"device", "owner", "role", "properties": {"displayName", ...}}."""
         data = (await self.request("lst_device")).get("data") or []
-        return [d["device"] if isinstance(d, dict) else str(d) for d in data]
+        return [d if isinstance(d, dict) else {"device": str(d)} for d in data]
+
+    async def list_devices(self) -> list[str]:
+        return [str(d["device"]) for d in await self.list_device_entries() if d.get("device")]
 
     async def get_device(self, sn: str) -> dict[str, Any]:
         return (await self.request("get", sn)).get("data") or {}
@@ -383,9 +391,18 @@ class ExoHomeClient:
         await self.request("set", sn, fields)
 
     async def get_all_devices(self) -> dict[str, dict[str, Any]]:
+        """Full records, with the list-level fields (display name, owner, role) folded in —
+        `get` alone does not return `properties`."""
         devices: dict[str, dict[str, Any]] = {}
-        for sn in await self.list_devices():
-            devices[sn] = await self.get_device(sn)
+        for entry in await self.list_device_entries():
+            sn = str(entry.get("device") or "")
+            if not sn:
+                continue
+            rec = await self.get_device(sn)
+            for key in ("properties", "owner", "role"):
+                if key in entry and key not in rec:
+                    rec[key] = entry[key]
+            devices[sn] = rec
         return devices
 
 

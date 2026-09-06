@@ -35,6 +35,7 @@ from .exohome import (
     ExoHomeClient,
     ExoHomeError,
 )
+from .infomodel import ModelSpec, parse_model, pick_model
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -56,6 +57,7 @@ class HotaiDevice:
 
     sn: str
     data: dict[str, Any] = field(default_factory=dict)
+    spec: ModelSpec | None = None  # cloud information model for this device family, if known
 
     @property
     def status(self) -> dict[str, Any]:
@@ -128,7 +130,27 @@ class HotaiDevice:
         return self.status.get(key)
 
     def range(self, key: str) -> tuple[int | None, int | None, list[int] | None]:
-        """(min, max, allowed values) from fields_range, whichever shape the cloud uses."""
+        """(min, max, allowed values): device fields_range first, else the family information model."""
+        lo, hi, allowed = self._range_from_fields_range(key)
+        if (lo, hi, allowed) != (None, None, None):
+            return lo, hi, allowed
+        fs = self.spec.spec(key) if self.spec else None
+        if fs is None:
+            return None, None, None
+        return fs.min, fs.max, (sorted(fs.allowed) or None)
+
+    def labels(self, key: str) -> dict[int, str]:
+        """value -> label from the information model (e.g. H0E 0:自動 1:低 2:中 3:高)."""
+        fs = self.spec.spec(key) if self.spec else None
+        return dict(fs.allowed) if fs else {}
+
+    def error_texts(self) -> list[str]:
+        code = self.value("H12")
+        if self.spec:
+            return self.spec.decode_error(code)
+        return [str(code)] if code else []
+
+    def _range_from_fields_range(self, key: str) -> tuple[int | None, int | None, list[int] | None]:
         fr = self.data.get("fields_range")
         merged: dict[str, Any] = {}
         if isinstance(fr, list):
@@ -203,11 +225,32 @@ class HotaiHub:
         await self.client.connect()
         records = await self.client.get_all_devices()
         self.devices = {sn: HotaiDevice(sn, rec) for sn, rec in records.items()}
+        await self._async_load_info_models()
         for dev in self.devices.values():
-            _LOGGER.debug("device %s model=%s fields=%s status=%s", dev.sn, dev.model, dev.fields, dev.status)
+            _LOGGER.debug(
+                "device %s model=%s family=%s fields=%s status=%s",
+                dev.sn, dev.model, dev.spec.family if dev.spec else None, dev.fields, dev.status,
+            )
         self._unsub_timer = async_track_time_interval(
             self.hass, self._async_periodic_refresh, timedelta(seconds=REFRESH_INTERVAL_SECONDS)
         )
+
+    async def _async_load_info_models(self) -> None:
+        """Attach the family information model (ranges, option labels, error texts) to each device."""
+        try:
+            models = await self.client.info_models()
+        except ExoHomeError as err:
+            _LOGGER.warning("info models unavailable, using generic SA04 defaults: %s", err)
+            return
+        cache: dict[str, ModelSpec] = {}
+        for dev in self.devices.values():
+            im = pick_model(models, dev.model)
+            if im is None:
+                continue
+            fam = str(im.get("familyName") or dev.model)
+            if fam not in cache:
+                cache[fam] = parse_model(im)
+            dev.spec = cache[fam]
 
     async def async_unload(self) -> None:
         if self._unsub_timer:
@@ -263,6 +306,7 @@ class HotaiHub:
             async_dispatcher_send(self.hass, f"{SIGNAL_DEVICE_UPDATE}_{sn}")
             return
         self.devices[sn] = HotaiDevice(sn, rec)
+        await self._async_load_info_models()
         _LOGGER.info("new HOTAI device %s (%s); reload the integration to create its entities", sn, self.devices[sn].model)
 
     async def _async_periodic_refresh(self, _now: Any) -> None:
@@ -280,9 +324,14 @@ class HotaiHub:
             _LOGGER.debug("refresh %s failed: %s", sn, err)
             return
         if sn in self.devices:
+            old = self.devices[sn].data
+            for key in ("properties", "owner", "role"):  # only lst_device carries these
+                if key in old and key not in rec:
+                    rec[key] = old[key]
             self.devices[sn].data = rec
         else:
             self.devices[sn] = HotaiDevice(sn, rec)
+            await self._async_load_info_models()
         async_dispatcher_send(self.hass, f"{SIGNAL_DEVICE_UPDATE}_{sn}")
 
     async def async_set(self, sn: str, fields: dict[str, int]) -> None:

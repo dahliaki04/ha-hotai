@@ -158,6 +158,13 @@ class HotaiSensor(HotaiEntity, SensorEntity):
             return self.entity_description.value_fn(self.device)
         return self.device.value(self.entity_description.field)
 
+    @property
+    def extra_state_attributes(self) -> dict[str, Any] | None:
+        if self.entity_description.field != F_ERROR:
+            return None
+        texts = self.device.error_texts()
+        return {"errors": texts, "description": "、".join(texts) if texts else "正常"}
+
 
 class HotaiDeviceStateSensor(HotaiEntity, SensorEntity):
     """Cloud-side device state (idle/…) plus module details as attributes."""

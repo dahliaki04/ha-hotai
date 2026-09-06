@@ -14,7 +14,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from . import HotaiConfigEntry, HotaiDevice, HotaiHub
-from .const import F_DEFROST, F_FILTER_DIRTY, F_TANK_FULL
+from .const import F_DEFROST, F_ERROR, F_FILTER_DIRTY, F_TANK_FULL
 from .entity import HotaiEntity
 
 
@@ -41,6 +41,9 @@ BINARY_SENSORS: tuple[HotaiBinarySensorDescription, ...] = (
         device_class=BinarySensorDeviceClass.RUNNING,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
+    HotaiBinarySensorDescription(
+        key="fault", field=F_ERROR, translation_key="fault", device_class=BinarySensorDeviceClass.PROBLEM
+    ),
 )
 
 
@@ -66,6 +69,12 @@ class HotaiBinarySensor(HotaiEntity, BinarySensorEntity):
     def is_on(self) -> bool | None:
         v = self.device.value(self.entity_description.field)
         return None if v is None else v != 0
+
+    @property
+    def extra_state_attributes(self) -> dict[str, object] | None:
+        if self.entity_description.field != F_ERROR:
+            return None
+        return {"errors": self.device.error_texts()}
 
 
 class HotaiConnectivity(HotaiEntity, BinarySensorEntity):

@@ -60,7 +60,8 @@ class HotaiNumber(HotaiEntity, NumberEntity):
         super().__init__(hub, device, desc.key)
         self.entity_description = desc
         lo, hi, _allowed = device.range(desc.field)
-        if lo is not None:
+        # The timer's model range is 1..N hours with 0 meaning "off"; keep 0 reachable.
+        if lo is not None and desc.field != F_TIMER_HOURS:
             self._attr_native_min_value = lo
         if hi is not None:
             self._attr_native_max_value = hi

@@ -50,7 +50,7 @@ python tools/probe.py you@example.com 'password' --set <SN> H00=1   # 開機測�
 ## 協定筆記（給想改的人）
 
 - `POST https://karos.apps.exosite.io/api:1/session` `{"email","password"}` → `{"token","id"}`；密碼錯回 HTTP 400 `Auth fail.`
-- `wss://karos.apps.exosite.io/api:1/phone`，第一個 frame `{"id":"ws-request-auth","request":"login","data":{"token"}}`
+- `wss://karos.apps.exosite.io/api:1/phone`，第一個 frame `{"id":1,"request":"login","data":{"token"}}`（id 必須是整數，字串會回 code 300 Bad request）
 - request：`{"id":<int>,"request":<name>,"device":<sn>,"data":{...}}`；名稱有 `get_me` `lst_device` `get` `set` `config` `calendar` `provision_token` `lst_user` `add_user` `rem_user` `set_properties` `del_device` `ota` `get_group` `set_group`…
 - event：`device_change`（`data.device` + `data.changes.{status,profile,properties,connected,device_state}`）、`add_device`、`del_device`、`token_expired`
 - 欄位定義來自 App 內建的 `assets/models/SA04.yaml`（除濕機）。其他 SA01（冷氣）… SA18 也在 App 裡，要接別的和泰家電照樣加平台即可。

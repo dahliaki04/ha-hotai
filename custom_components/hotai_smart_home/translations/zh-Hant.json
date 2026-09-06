@@ -13,7 +13,9 @@
       "reauth_confirm": {
         "title": "重新登入",
         "description": "{email} 的密碼已失效，請輸入目前的密碼。",
-        "data": { "password": "密碼" }
+        "data": {
+          "password": "密碼"
+        }
       }
     },
     "error": {
@@ -47,45 +49,119 @@
       }
     },
     "sensor": {
-      "temperature": { "name": "室內溫度" },
-      "humidity": { "name": "室內濕度" },
-      "current": { "name": "運轉電流" },
-      "voltage": { "name": "運轉電壓" },
-      "power_factor": { "name": "運轉功因" },
-      "power": { "name": "即時功率" },
-      "energy": { "name": "累積用電量" },
-      "error_code": { "name": "錯誤訊息" },
-      "side_vent": { "name": "側向出風口", "state": { "normal": "正常", "side": "側向出風" } },
-      "device_state": { "name": "雲端裝置狀態" }
+      "temperature": {
+        "name": "室內溫度"
+      },
+      "humidity": {
+        "name": "室內濕度"
+      },
+      "current": {
+        "name": "運轉電流"
+      },
+      "voltage": {
+        "name": "運轉電壓"
+      },
+      "power_factor": {
+        "name": "運轉功因"
+      },
+      "power": {
+        "name": "即時功率"
+      },
+      "energy": {
+        "name": "累積用電量"
+      },
+      "error_code": {
+        "name": "錯誤訊息"
+      },
+      "side_vent": {
+        "name": "側向出風口",
+        "state": {
+          "normal": "正常",
+          "side": "側向出風"
+        }
+      },
+      "device_state": {
+        "name": "雲端裝置狀態"
+      }
     },
     "binary_sensor": {
-      "tank_full": { "name": "滿水" },
-      "filter_dirty": { "name": "濾網需清洗" },
-      "defrosting": { "name": "除霜中" },
-      "connectivity": { "name": "雲端連線" }
+      "tank_full": {
+        "name": "滿水"
+      },
+      "filter_dirty": {
+        "name": "濾網需清洗"
+      },
+      "defrosting": {
+        "name": "除霜中"
+      },
+      "connectivity": {
+        "name": "雲端連線"
+      },
+      "fault": {
+        "name": "異常"
+      }
     },
     "switch": {
-      "auto_swing": { "name": "自動風向" },
-      "ambient_light": { "name": "氣氛燈" },
-      "body_anti_mold": { "name": "機體防霉" },
-      "high_humidity_alert": { "name": "高濕度提示" },
-      "key_lock": { "name": "按鍵鎖" },
-      "mute": { "name": "靜音" }
+      "auto_swing": {
+        "name": "自動風向"
+      },
+      "ambient_light": {
+        "name": "氣氛燈"
+      },
+      "body_anti_mold": {
+        "name": "機體防霉"
+      },
+      "high_humidity_alert": {
+        "name": "高濕度提示"
+      },
+      "key_lock": {
+        "name": "按鍵鎖"
+      },
+      "mute": {
+        "name": "靜音"
+      }
     },
     "select": {
-      "fan_speed": { "name": "風速", "state": { "auto": "自動" } },
-      "dehumidify_level": { "name": "除濕段數" },
-      "dry_clothes_level": { "name": "乾衣段數" },
-      "swing_level": { "name": "風向段數" },
-      "air_purify_mode": { "name": "空氣清淨模式", "state": { "off": "關閉" } },
+      "fan_speed": {
+        "name": "風速",
+        "state": {
+          "auto": "自動",
+          "low": "低",
+          "medium": "中",
+          "high": "高"
+        }
+      },
+      "dehumidify_level": {
+        "name": "除濕段數"
+      },
+      "dry_clothes_level": {
+        "name": "乾衣段數"
+      },
+      "swing_level": {
+        "name": "風向段數"
+      },
+      "air_purify_mode": {
+        "name": "空氣清淨模式",
+        "state": {
+          "off": "關閉"
+        }
+      },
       "sound": {
         "name": "聲音設定",
-        "state": { "normal": "正常", "key_beep": "按鍵聲音", "tank_and_key_beep": "滿水及按鍵聲音" }
+        "state": {
+          "normal": "正常",
+          "key_beep": "按鍵聲音",
+          "tank_and_key_beep": "滿水及按鍵聲音"
+        }
       }
     },
     "number": {
-      "timer_hours": { "name": "定時關機" },
-      "high_humidity_threshold": { "name": "高濕度提示值" }
+      "timer_hours": {
+        "name": "定時關機"
+      },
+      "high_humidity_threshold": {
+        "name": "高濕度提示值"
+      }
     }
   }
 }

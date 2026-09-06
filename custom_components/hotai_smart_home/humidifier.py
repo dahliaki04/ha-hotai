@@ -102,7 +102,10 @@ class HotaiDehumidifier(HotaiEntity, HumidifierEntity):
         await self.async_set_fields({F_POWER: 0})
 
     async def async_set_humidity(self, humidity: int) -> None:
-        fields: dict[str, int] = {F_TARGET_HUMIDITY: int(humidity)}
+        # Karo's HT046A1 silently ignores setpoints that aren't multiples of 5 (56 -> no change, 60/50/55 ok).
+        target = int(round(humidity / 5.0)) * 5
+        target = max(self.min_humidity, min(self.max_humidity, target))
+        fields: dict[str, int] = {F_TARGET_HUMIDITY: target}
         # A humidity setpoint only matters in 設定除濕 (target) mode; switch to it like the app does.
         if self.device.supports(F_MODE) and self.mode not in ("target", None) and "target" in (self.available_modes or []):
             fields[F_MODE] = MODE_TO_VALUE["target"]
