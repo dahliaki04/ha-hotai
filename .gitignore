@@ -5,3 +5,5 @@ tools/probe_dump*.json
 .claude/
 localtest/cert.pem
 localtest/key.pem
+local-server/tls/*.key
+local-server/tls/*.pem
