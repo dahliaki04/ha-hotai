@@ -235,8 +235,16 @@ def handle_standalone(dev: ssl.SSLSocket, addr) -> None:
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     here = Path(__file__).parent
-    ap.add_argument("--cert", default=str(here.parent / "localtest" / "cert.pem"))
-    ap.add_argument("--key", default=str(here.parent / "localtest" / "key.pem"))
+    # Production: a CA-issued cert for YOUR hostname. Put the leaf + intermediate(s) in
+    # tls/fullchain.pem (leaf first) and the key in tls/<host>.key. The device only trusts chains
+    # ending in DigiCert Global Root CA or Amazon Root CA 1 (see firmware-trust/README.md), so the
+    # intermediate MUST be included or the module answers unknown_ca.
+    _tls = here / "tls"
+    _prod_chain = _tls / "fullchain.pem"
+    _prod_keys = sorted(_tls.glob("*.key"))
+    ap.add_argument("--cert", default=str(_prod_chain if _prod_chain.exists() else here.parent / "localtest" / "cert.pem"))
+    ap.add_argument("--key", default=str(_prod_keys[0] if _prod_chain.exists() and _prod_keys else here.parent / "localtest" / "key.pem"))
+    ap.add_argument("--sni", default=UPSTREAM_SNI, help="hostname the device was provisioned with (for logging only)")
     ap.add_argument("--standalone", action="store_true", help="emulate the cloud instead of proxying")
     ap.add_argument("--upstream-ip", action="append", help="real Exosite IP (repeatable)")
     ap.add_argument("--port", type=int, default=PORT)
@@ -260,7 +268,17 @@ def main() -> None:
     print(f"{ts()} mini-exosite listening on :{args.port}  mode={mode}", flush=True)
     if not args.standalone:
         print(f"{ts()} upstream candidates: {ups}", flush=True)
-    print(f"{ts()} point {UPSTREAM_SNI} at this host in local DNS, then force the device to reconnect.", flush=True)
+    try:
+        import ssl as _ssl
+        _c = _ssl._ssl._test_decode_cert(args.cert)  # type: ignore[attr-defined]
+        _subj = dict(x[0] for x in _c.get("subject", ())).get("commonName")
+        _iss = dict(x[0] for x in _c.get("issuer", ())).get("commonName")
+        print(f"{ts()} serving cert CN={_subj!r} issued by {_iss!r} (device trusts DigiCert Global Root CA / Amazon Root CA 1 chains)", flush=True)
+        if _iss == _subj:
+            print(f"{ts()} NOTE: self-signed -> the device WILL reject this (unknown_ca). Use a DigiCert-brand cert in tls/fullchain.pem for real use.", flush=True)
+    except Exception:
+        pass
+    print(f"{ts()} point the provisioned hostname at this host in local DNS, then force the device to reconnect.", flush=True)
 
     while True:
         raw, addr = srv.accept()
