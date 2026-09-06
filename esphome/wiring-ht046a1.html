@@ -1,0 +1,197 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HT046A1 接線圖</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --bg:#F5F7F9; --ink:#1C2229; --muted:#5B6672; --line:#C9D1DA; --board:#E4E9EF; --board-ink:#2C3540;
+    --w-5v:#D23F2B; --w-gnd:#2B2F33; --w-dp:#1E8E5A; --w-dm:#2A6FD6; --w-3v3:#C98A1A; --nc:#A7B0BA;
+    --note-bg:#FFF6E3; --note-line:#E7C77A; --warn-bg:#FDE8E5; --warn-line:#E39A90;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#14181D; --ink:#E6EAEE; --muted:#9AA5B1; --line:#3A434D; --board:#232A32; --board-ink:#DCE2E8;
+      --w-gnd:#C9CED4; --w-5v:#EF6A57; --w-dp:#3BBF82; --w-dm:#5C9BFF; --w-3v3:#E5AA3C; --nc:#5E6873;
+      --note-bg:#2A2416; --note-line:#6E5A24; --warn-bg:#33201D; --warn-line:#7A3A32;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#14181D; --ink:#E6EAEE; --muted:#9AA5B1; --line:#3A434D; --board:#232A32; --board-ink:#DCE2E8;
+    --w-gnd:#C9CED4; --w-5v:#EF6A57; --w-dp:#3BBF82; --w-dm:#5C9BFF; --w-3v3:#E5AA3C; --nc:#5E6873;
+    --note-bg:#2A2416; --note-line:#6E5A24; --warn-bg:#33201D; --warn-line:#7A3A32;
+  }
+  body{background:var(--bg);color:var(--ink);font-family:"Noto Sans TC",system-ui,-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;line-height:1.6;margin:0}
+  main{max-width:760px;margin:0 auto;padding:28px 18px 56px;display:flex;flex-direction:column;gap:28px}
+  h1{font-size:26px;font-weight:700;margin:0;text-wrap:balance;letter-spacing:.01em}
+  h2{font-size:16px;font-weight:700;margin:0 0 10px;letter-spacing:.02em}
+  .sub{color:var(--muted);margin:4px 0 0;font-size:14px}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace}
+  figure{margin:0;border:1px solid var(--line);border-radius:6px;padding:10px 6px 4px;overflow-x:auto;background:color-mix(in srgb,var(--bg) 92%,var(--board))}
+  svg{display:block;max-width:100%;height:auto;min-width:640px;margin:0 auto;color:var(--ink);font-family:"IBM Plex Mono",ui-monospace,monospace}
+  figcaption{font-size:13px;color:var(--muted);padding:8px 10px 6px}
+  table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-weight:500;color:var(--muted);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+  .sw{display:inline-block;width:12px;height:12px;border-radius:2px;vertical-align:-1px;margin-right:6px;border:1px solid rgba(0,0,0,.15)}
+  .note,.warn{border-left:3px solid var(--note-line);background:var(--note-bg);padding:10px 14px;border-radius:0 4px 4px 0;font-size:14px}
+  .warn{border-left-color:var(--warn-line);background:var(--warn-bg)}
+  ol,ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:14px}
+  .grid{display:grid;grid-template-columns:1fr;gap:10px}
+  @media (min-width:640px){.grid{grid-template-columns:1fr 1fr}}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--muted);padding:6px 10px 0}
+</style>
+
+<main>
+  <header>
+    <h1>和泰 HT046A1 除濕機 → XIAO ESP32-C3 接線圖</h1>
+    <p class="sub">取代原廠 USB 型 WIFI 盒。三個零件：USB-A 公頭轉接板、BSS138 準位轉換模組、Seeed XIAO ESP32-C3。全部由除濕機的 5V 供電。</p>
+  </header>
+
+  <figure>
+    <svg viewBox="0 0 900 400" role="img" aria-label="接線圖：除濕機 USB 座的 5V 供電給 BSS138 高壓側與 XIAO 5V；GND 三者共地；兩條資料線各經 BSS138 一個通道接到 XIAO 的 D7 與 D6；XIAO 3V3 供 BSS138 低壓側。">
+      <defs>
+        <marker id="dot" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="5" markerHeight="5"><circle cx="3" cy="3" r="2.6" fill="currentColor"/></marker>
+      </defs>
+
+      <!-- USB-A male breakout -->
+      <rect x="40" y="80" width="150" height="220" rx="6" fill="var(--board)" stroke="var(--board-ink)" stroke-width="1.5"/>
+      <rect x="40" y="52" width="70" height="28" rx="3" fill="var(--board-ink)" opacity=".85"/>
+      <text x="75" y="70" font-size="10" text-anchor="middle" fill="var(--bg)">USB-A 公頭</text>
+      <text x="115" y="106" font-size="12" text-anchor="middle" fill="var(--board-ink)" font-weight="500">USB-A 公頭轉接板</text>
+      <text x="115" y="122" font-size="10" text-anchor="middle" fill="var(--muted)">插進除濕機的 USB 座</text>
+      <g font-size="11" fill="var(--board-ink)">
+        <text x="180" y="124" text-anchor="end">1 VBUS</text>
+        <text x="180" y="174" text-anchor="end">2 D−</text>
+        <text x="180" y="224" text-anchor="end">3 D+</text>
+        <text x="180" y="274" text-anchor="end">4 GND</text>
+      </g>
+      <g fill="var(--board-ink)">
+        <rect x="186" y="116" width="8" height="8"/><rect x="186" y="166" width="8" height="8"/>
+        <rect x="186" y="216" width="8" height="8"/><rect x="186" y="266" width="8" height="8"/>
+      </g>
+
+      <!-- BSS138 module -->
+      <rect x="360" y="100" width="180" height="200" rx="6" fill="var(--board)" stroke="var(--board-ink)" stroke-width="1.5"/>
+      <text x="450" y="128" font-size="12" text-anchor="middle" fill="var(--board-ink)" font-weight="500">BSS138 準位轉換</text>
+      <text x="450" y="144" font-size="10" text-anchor="middle" fill="var(--muted)">HV 側 5V ｜ LV 側 3.3V</text>
+      <g font-size="11" fill="var(--board-ink)">
+        <text x="368" y="144" text-anchor="start" dy="0">HV1</text>
+        <text x="368" y="194" text-anchor="start">HV2</text>
+        <text x="532" y="144" text-anchor="end">LV1</text>
+        <text x="532" y="194" text-anchor="end">LV2</text>
+        <text x="392" y="112" text-anchor="middle">HV</text>
+        <text x="508" y="112" text-anchor="middle">LV</text>
+        <text x="400" y="292" text-anchor="middle">GND</text>
+        <text x="500" y="292" text-anchor="middle">LV</text>
+      </g>
+      <g fill="var(--nc)" font-size="10">
+        <text x="368" y="240">HV3 ／ HV4 不接</text>
+        <text x="532" y="240" text-anchor="end">LV3 ／ LV4 不接</text>
+      </g>
+      <g fill="var(--board-ink)">
+        <rect x="352" y="136" width="8" height="8"/><rect x="352" y="186" width="8" height="8"/>
+        <rect x="540" y="136" width="8" height="8"/><rect x="540" y="186" width="8" height="8"/>
+        <rect x="396" y="92" width="8" height="8"/><rect x="396" y="300" width="8" height="8"/><rect x="496" y="300" width="8" height="8"/>
+      </g>
+
+      <!-- XIAO ESP32-C3 -->
+      <rect x="710" y="60" width="150" height="240" rx="6" fill="var(--board)" stroke="var(--board-ink)" stroke-width="1.5"/>
+      <rect x="770" y="44" width="30" height="16" rx="3" fill="var(--board-ink)" opacity=".85"/>
+      <text x="785" y="40" font-size="10" text-anchor="middle" fill="var(--muted)">USB-C：只在燒錄時接</text>
+      <text x="785" y="86" font-size="12" text-anchor="middle" fill="var(--board-ink)" font-weight="500">XIAO ESP32-C3</text>
+      <g font-size="11" fill="var(--board-ink)">
+        <text x="722" y="124">5V</text>
+        <text x="722" y="174">D7 · GPIO20 · RX</text>
+        <text x="722" y="224">D6 · GPIO21 · TX</text>
+        <text x="722" y="264">3V3</text>
+        <text x="722" y="294">GND</text>
+      </g>
+      <g fill="var(--board-ink)">
+        <rect x="702" y="116" width="8" height="8"/><rect x="702" y="166" width="8" height="8"/>
+        <rect x="702" y="216" width="8" height="8"/><rect x="702" y="256" width="8" height="8"/><rect x="702" y="286" width="8" height="8"/>
+      </g>
+
+      <!-- wires -->
+      <g fill="none" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+        <!-- 5V red: USB1 -> BSS HV (top) and XIAO 5V -->
+        <polyline stroke="var(--w-5v)" points="194,120 240,120 240,30 400,30 400,92"/>
+        <polyline stroke="var(--w-5v)" points="400,30 680,30 680,120 702,120"/>
+        <!-- D- blue: USB2 -> HV1 ; LV1 -> XIAO D7 RX -->
+        <polyline stroke="var(--w-dm)" points="194,170 260,170 260,140 352,140"/>
+        <polyline stroke="var(--w-dm)" points="548,140 640,140 640,170 702,170"/>
+        <!-- D+ green: USB3 -> HV2 ; LV2 -> XIAO D6 TX -->
+        <polyline stroke="var(--w-dp)" points="194,220 300,220 300,190 352,190"/>
+        <polyline stroke="var(--w-dp)" points="548,190 620,190 620,220 702,220"/>
+        <!-- 3V3 amber: XIAO 3V3 -> BSS LV (bottom) -->
+        <polyline stroke="var(--w-3v3)" points="702,260 560,260 560,330 500,330 500,308"/>
+        <!-- GND: USB4 -> bus -> BSS GND (bottom) and XIAO GND -->
+        <polyline stroke="var(--w-gnd)" points="194,270 230,270 230,360 400,360 400,308"/>
+        <polyline stroke="var(--w-gnd)" points="400,360 690,360 690,290 702,290"/>
+      </g>
+      <!-- junction dots -->
+      <g fill="var(--w-5v)"><circle cx="400" cy="30" r="4"/></g>
+      <g fill="var(--w-gnd)"><circle cx="400" cy="360" r="4"/></g>
+
+      <!-- wire labels -->
+      <g font-size="11">
+        <text x="460" y="24" fill="var(--w-5v)">5V（除濕機供電，紅）</text>
+        <text x="272" y="134" fill="var(--w-dm)">D−（白）</text>
+        <text x="308" y="212" fill="var(--w-dp)">D+（綠）</text>
+        <text x="596" y="352" fill="var(--w-gnd)">GND（黑）三者共地</text>
+        <text x="572" y="322" fill="var(--w-3v3)">3.3V 給 LV 側</text>
+      </g>
+    </svg>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--w-5v)"></i>5V</span>
+      <span><i class="sw" style="background:var(--w-gnd)"></i>GND</span>
+      <span><i class="sw" style="background:var(--w-dm)"></i>D− → 通道 1 → RX</span>
+      <span><i class="sw" style="background:var(--w-dp)"></i>D+ → 通道 2 → TX</span>
+      <span><i class="sw" style="background:var(--w-3v3)"></i>3V3</span>
+    </div>
+    <figcaption>除濕機 USB 座不是真的 USB：四支腳只是 5V、GND 和兩條 UART 線。D−/D+ 哪條是機板的 TX 還沒驗證，第一次開機沒回應就把兩條資料線在 USB 端對調。</figcaption>
+  </figure>
+
+  <section>
+    <h2>接線表</h2>
+    <table>
+      <thead><tr><th>線</th><th>從</th><th>到</th></tr></thead>
+      <tbody>
+        <tr><td><i class="sw" style="background:var(--w-5v)"></i>5V</td><td class="mono">USB pin 1 VBUS</td><td class="mono">BSS138 HV ＋ XIAO 5V</td></tr>
+        <tr><td><i class="sw" style="background:var(--w-gnd)"></i>GND</td><td class="mono">USB pin 4 GND</td><td class="mono">BSS138 GND ＋ XIAO GND</td></tr>
+        <tr><td><i class="sw" style="background:var(--w-dm)"></i>資料</td><td class="mono">USB pin 2 D−</td><td class="mono">BSS138 HV1 → LV1 → XIAO D7 (GPIO20, RX)</td></tr>
+        <tr><td><i class="sw" style="background:var(--w-dp)"></i>資料</td><td class="mono">USB pin 3 D+</td><td class="mono">BSS138 HV2 → LV2 → XIAO D6 (GPIO21, TX)</td></tr>
+        <tr><td><i class="sw" style="background:var(--w-3v3)"></i>3V3</td><td class="mono">XIAO 3V3</td><td class="mono">BSS138 LV</td></tr>
+        <tr><td><i class="sw" style="background:var(--nc)"></i>—</td><td class="mono">HV3 HV4 LV3 LV4</td><td>空著不接</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="grid">
+    <div class="warn">
+      <strong>供電只能一個來源。</strong>燒錄時接 USB-C、不要插除濕機；燒好後拔掉 USB-C 再插進除濕機，之後只靠除濕機的 5V。兩邊同時接會把 5V 倒灌回機板。
+    </div>
+    <div class="note">
+      <strong>USB 腳位認轉接板上的絲印，不要靠位置猜。</strong>轉接板會印 VBUS / D− / D+ / GND。剪 USB 線的話：紅＝5V、黑＝GND、白＝D−、綠＝D+。
+    </div>
+  </div>
+
+  <section>
+    <h2>第一次開機怎麼判斷成功</h2>
+    <ol>
+      <li>先只接 USB-C 燒錄 <span class="mono">hotai-dehumidifier.yaml</span>，確認 HA 出現「和泰除濕機」裝置。</li>
+      <li>拔 USB-C，拔除濕機的原廠 WIFI 盒，把 XIAO 插上。</li>
+      <li>看 ESPHome log：韌體開機會自動送登錄封包 <span class="mono">06 00 00 FF FF ＋校驗</span>。</li>
+      <li>text sensor <span class="mono">SA Model</span> 顯示 <span class="mono">HT046A1</span>、<span class="mono">SA Services</span> 有內容 → 完成。</li>
+      <li>沒有任何回應 → 對調 USB pin 2 和 pin 3 那兩條線再試一次（這是最常見的錯）。</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>零件</h2>
+    <ul>
+      <li>Seeed XIAO ESP32-C3（已有）</li>
+      <li>BSS138 四通道雙向準位轉換模組（已訂，NT$50）</li>
+      <li>USB-A 公頭轉接板（蝦皮搜「USB A 公頭 轉接板 DIP」，NT$15–30）或剪一條舊 USB 線</li>
+      <li>杜邦線母對母數條，排針焊到 BSS138 模組</li>
+    </ul>
+  </section>
+</main>
